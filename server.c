@@ -42,7 +42,26 @@ int main(int argc, char *argv[]){
 		bzero(buffer,1000);//256
 		n = read(newsockfd, buffer, 999);//255
 		if (n < 0) error("ERROR reading from socket");
-		printf("Here is the message: %s\n",buffer);
+		printf("Here is the message: %s\n",buffer);//buffer is the variable that will be reading in the value from the users
+
+		int count = 0;
+		char wordToGuess = {'H', 'E', 'L'};
+		int wordLength = strlen(wordToGuess);
+		printf("Word length: %d", wordLength);
+
+		/*if (count < 1){
+			//set this as the word that the players will try to guess.
+			wordToGuess[1000] = buffer;
+			count++;
+		}*/
+		
+		/*for(int i = 0; i < 1000; i++){
+			if( wordToGuess[i] == '\0'){
+			
+			}
+		}*/
+		
+
 		n = write(newsockfd, "I got your message", 18);
 		if (n < 0) error("ERROR writing to socket");
 	}
