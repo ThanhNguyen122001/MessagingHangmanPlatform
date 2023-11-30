@@ -1,24 +1,25 @@
-from tkinter import *
+from socket import *
+import os
+import sys
 
-def userInterface(): # Creating an User Interface
-    GUI = Tk() # Initalize Object
-    GUI.title("Hangman Game") # Setting Title of User Interface
-    GUI.geometry("400x400") # Size of User Interface
+def server():
+    sock = socket(AF_INET, SOCK_STREAM)
+    host = 'localhost'
+    port = 1000
     
-    guessHistory = Text(GUI, bg='white', width='50', height='8') # Creates a box for the history of Guesses made
-    guessHistory.config(state=DISABLED)
+    sock.bind((host, port))
+    sock.listen(5)
     
-    sendButton = Button(GUI, bg='red', width='50', height='8') # Creates a button to send the guess
+    connection = sock.accept()
+    address = sock.accept()
     
-    GuessBox = Text(GUI, bg='white', width='50', height='8')
-    
-    GUI.mainloop() # Loops the User Interface
+    return connection
     
 
 def game():
     inputLetter = 'i' #This is the input from the players.
     mainWord = 'Main' #The word the players are guessing
-    blankWord = main
+    # blankWord = main
     index = 0
     
     if mainWord.__contains__(inputLetter):
@@ -29,4 +30,4 @@ def game():
             index = index + 1
             
 if __name__ == "__main__":
-    userInterface()
+    connection = server()
