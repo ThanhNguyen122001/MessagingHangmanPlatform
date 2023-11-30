@@ -1,34 +1,24 @@
-import socket
-import selectors
-import os 
-import sys
-import types
+from tkinter import *
 
-def server():
-    host = sys.argv[1]
-    port = int(sys.argv[2])
-    select = selectors.DefaultSelector()
+def userInterface(): # Creating an User Interface
+    GUI = Tk() # Initalize Object
+    GUI.title("Hangman Game") # Setting Title of User Interface
+    GUI.geometry("400x400") # Size of User Interface
     
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind((host, port))
-    sock.listen()
-    #Checking the Host and Port number
-    print(f"Host: {(host)}")
-    print(f"Port: {(port)}")
-    sock.setblocking(False)
-    select.register(sock, selectors.EVENT_READ, data=None)
+    guessHistory = Text(GUI, bg='white', width='50', height='8') # Creates a box for the history of Guesses made
+    guessHistory.config(state=DISABLED)
     
-    try:
-        while True:
-            event = select.select(timeout=None)
-            
-    finally:
-        sock.close()
+    sendButton = Button(GUI, bg='red', width='50', height='8') # Creates a button to send the guess
+    
+    GuessBox = Text(GUI, bg='white', width='50', height='8')
+    
+    GUI.mainloop() # Loops the User Interface
+    
 
 def game():
     inputLetter = 'i' #This is the input from the players.
     mainWord = 'Main' #The word the players are guessing
-    blankWord = 
+    blankWord = main
     index = 0
     
     if mainWord.__contains__(inputLetter):
@@ -38,5 +28,5 @@ def game():
                 print(index) #This will print out the index of the character that we are looking for.
             index = index + 1
             
-
-game()
+if __name__ == "__main__":
+    userInterface()
