@@ -1,20 +1,19 @@
-from socket import *
-import os
 import sys
+import socket
 
 def server():
-    sock = socket(AF_INET, SOCK_STREAM)
-    host = 'localhost'
-    port = 1000
-    
-    sock.bind((host, port))
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind(('localhost', 2000))
     sock.listen(5)
-    
-    connection = sock.accept()
-    address = sock.accept()
-    
-    return connection
-    
+
+    while True:
+        connection, address = sock.accept()
+        buffer = connection.recv(1024)
+        print(str(buffer, "utf-8"))
+        word = str(buffer, "utf-8")
+        break
+
+    print(word)
 
 def game():
     inputLetter = 'i' #This is the input from the players.
@@ -29,5 +28,6 @@ def game():
                 print(index) #This will print out the index of the character that we are looking for.
             index = index + 1
             
+            
 if __name__ == "__main__":
-    connection = server()
+    server()
