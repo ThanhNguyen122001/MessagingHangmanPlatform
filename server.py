@@ -11,8 +11,6 @@ ssock.listen(5) # Maximum of Connections
     
 while True:
     connection, address = ssock.accept() # Accept Connection
-    buffer = connection.recv(1024)
-    word = str(buffer, "utf-8")
     break
     
 # Hangman Drawings
@@ -122,8 +120,7 @@ def letterChecker(guess, guessedLetters):
         
     return guess
 
-#mainWord = input("Enter your answer:") #The word the players are guessing
-mainWord = 'game'
+mainWord = input("Enter your answer:") #The word the players are guessing
 inputLetter = '' #This is the input from the players.
 missLetters = '' #All the letter that the user missed.
 correctLetters = '' #All the letters that the usermgot correct.
@@ -141,19 +138,28 @@ while True:
     inputLetter = connection.recv(1024)
     inputLetter = str(inputLetter, "utf-8")
     inputLetter = inputLetter.lower() # Make any letter is lowercase
-    #inputLetter = letterChecker(inputLetter, missLetters + correctLetters)
+    inputLetter = letterChecker(inputLetter, missLetters + correctLetters)
     print(f"Guessed Letter: {inputLetter}")
-    print(completeWord)
     
     if inputLetter in mainWord:
-        if set(mainWord) == (set(correctLetters)):
-            completeWord = True
-        else:
-            completeWord = False
-        
         correctLetters = correctLetters + inputLetter
-        print(set(correctLetters))
-        print(set(mainWord))
+    else:
+        missLetters = missLetters + inputLetter
+    
+    if set(mainWord) == (set(correctLetters)):
+        completeWord = True
+    else:
+        completeWord = False
+        
+    # If player found all of the letters 
+    if completeWord == True:
+        print("All the Letters has been found!!")
+        print(f"The answer was: {mainWord}")
+        print("Client Win")
+        gameStatus = False
+        break
+        
+        
         #completeWord = True # Status if word has been found
         
         #If player hasn't found all of the letters
@@ -161,23 +167,15 @@ while True:
         #    if mainWord[c] not in correctLetters:
         #        correctLetters = False
         #        break
-        
-        # If player found all of the letters 
-        if completeWord == True:
-            print("All the Letters has been found!!")
-            print("Client Win")
-            gameStatus = False
-            break
-        
-    else:
-        missLetters = missLetters + inputLetter
+    
         # No more guesses are possible 
-        if len(missLetters) == len(drawings) - 1:
-            board(drawings, missLetters, correctLetters, mainWord) #Print out the final board
-            print("No more guesses\n")
-            print("Game Over, Server Lose")
-            gameStatus = False
-            break
+    if len(missLetters) == len(drawings) - 1:
+        board(drawings, missLetters, correctLetters, mainWord) #Print out the final board
+        print("No more guesses\n")
+        print(f"The answer was: {mainWord}")
+        print("Game Over, Server Lose")
+        gameStatus = False
+        break
     
 
 #Finish with the game close the server
