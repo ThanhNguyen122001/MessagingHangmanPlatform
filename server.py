@@ -2,22 +2,19 @@ import sys
 import socket
 
 #Server Implementation 
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Creates a Socket
+ssock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Creates a Socket
 host = 'localhost' # Asks for IP Address
 port = 1234
     
-sock.bind((host, port)) # Binds the sockets
-sock.listen(5) # Maximum of Connections
+ssock.bind((host, port)) # Binds the sockets
+ssock.listen(5) # Maximum of Connections
     
 while True:
-    connection, address = sock.accept() # Accept Connection
+    connection, address = ssock.accept() # Accept Connection
     buffer = connection.recv(1024)
-    print(str(buffer, "utf-8"))
-    guessingLetter = str(buffer, "utf-8")
+    word = str(buffer, "utf-8")
     break
     
-print(guessingLetter)
-
 # Hangman Drawings
 drawings = ['''
   +---+
@@ -78,20 +75,19 @@ def board(drawings, missLetters, correctLetters, mainWord):
     for l in missLetters:
         print(l, end='')
     print()
-    indexArray = [] #This will hold the index values of the 
     
-    emptyLetters = '_' * len(mainWord) # Prints '_' how many times depends on the length of the 'mainWord"
-    
-    # Filling the empty Letters
-    for c in range(len(mainWord)):
-        if mainWord[c] in correctLetters:
-            emptyLetters = emptyLetters[:c] + mainWord[c] + emptyLetters[c+1:]
-            
-    # Printing out the work
-    for let in emptyLetters:
-        print(let, end='')
+    print('All Corrected Letters: ', end='')
+    for p in correctLetters:
+        print(p, end='')
     print()
-            
+    
+    
+    for char in range(len(mainWord)):
+        if mainWord[char] in correctLetters:
+            print(mainWord[char], end='')
+        else:
+            print("_", end='')
+    print()
     
 #def guess(alreadyGuess, gameStatus):
 #    while gameStatus:
@@ -126,48 +122,63 @@ def letterChecker(guess, guessedLetters):
         
     return guess
 
-mainWord = input("Enter your secret word: ") #The word the players are guessing
-print(mainWord) #Printing "mainWord" to server terminal to check if it working
+#mainWord = input("Enter your answer:") #The word the players are guessing
+mainWord = 'game'
 inputLetter = '' #This is the input from the players.
 missLetters = '' #All the letter that the user missed.
 correctLetters = '' #All the letters that the usermgot correct.
 gameStatus = True # Current Game Status
+print(f"The answer is: {mainWord}") # Print out the winning word
+completeWord = False
+
 while True:
+    
     #Displaying the game board
     board(drawings, missLetters, correctLetters, mainWord)
     
     # Obtaining the input  
-    inputLetter = input("Enter your guessing letter: ")
+    #inputLetter = input("Enter your guessing letter: ")
+    inputLetter = connection.recv(1024)
+    inputLetter = str(inputLetter, "utf-8")
     inputLetter = inputLetter.lower() # Make any letter is lowercase
-    inputLetter = letterChecker(inputLetter, missLetters + correctLetters)
-        
+    #inputLetter = letterChecker(inputLetter, missLetters + correctLetters)
+    print(f"Guessed Letter: {inputLetter}")
+    print(completeWord)
+    
     if inputLetter in mainWord:
+        if set(mainWord) == (set(correctLetters)):
+            completeWord = True
+        else:
+            completeWord = False
+        
         correctLetters = correctLetters + inputLetter
-        completeWord = True # Status if word has been found
+        print(set(correctLetters))
+        print(set(mainWord))
+        #completeWord = True # Status if word has been found
         
         #If player hasn't found all of the letters
-        for c in range(len(mainWord)):
-            if mainWord[c] not in correctLetters:
-                correctLetters = False
-                break
+        #for c in range(len(mainWord)):
+        #    if mainWord[c] not in correctLetters:
+        #        correctLetters = False
+        #        break
         
         # If player found all of the letters 
         if completeWord == True:
             print("All the Letters has been found!!")
-            print("You Win")
-            gameStatus = True
+            print("Client Win")
+            gameStatus = False
             break
         
     else:
         missLetters = missLetters + inputLetter
-        # No more guesses are  possible 
+        # No more guesses are possible 
         if len(missLetters) == len(drawings) - 1:
             board(drawings, missLetters, correctLetters, mainWord) #Print out the final board
             print("No more guesses\n")
-            print("Game Over, You Lose")
+            print("Game Over, Server Lose")
             gameStatus = False
             break
     
 
 #Finish with the game close the server
-sock.close()
+ssock.close()
