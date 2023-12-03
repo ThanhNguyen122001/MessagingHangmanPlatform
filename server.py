@@ -1,3 +1,6 @@
+# CIS 457 Hangman Game with Server and Client 
+# Created by: Thanh Nguyen, Isaac Bouwkamp
+
 import sys
 import socket
 
@@ -171,7 +174,7 @@ while True:
         # No more guesses are possible 
     if len(missLetters) == len(drawings) - 1:
         board(drawings, missLetters, correctLetters, mainWord) #Print out the final board
-        print("No more guesses\n")
+        print("No more guesses")
         print(f"The answer was: {mainWord}")
         print("Game Over, Server Lose")
         gameStatus = False
